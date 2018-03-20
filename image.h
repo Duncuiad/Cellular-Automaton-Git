@@ -29,6 +29,6 @@ void writePixel(Image *img, unsigned x, unsigned y, Color c);
 
 Color packColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A);
 
-Color hueGradient(int min, int max, int target, char type);
+Color hueGradient(double min, double max, double target, char type);
 
 #endif // IMAGE_H_INCLUDED

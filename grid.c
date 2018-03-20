@@ -1,19 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "grid.h"
 
-
-typedef struct Cell {
-	int data;
-	// stuff to be added later
-} Cell;
-
-typedef struct Grid {
-	unsigned width;
-	unsigned height;
-	Cell *curCell;
-	Cell *newCell; // "working copy"
-} Grid;
-
+/*
+typedef struct Cell
+typedef struct Grid
+*/
 
 Grid initGrid(unsigned width, unsigned height) {
 	Grid g;

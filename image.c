@@ -73,14 +73,14 @@ void grid2PNG(Grid g, const char *filename) {
     Cell c;
     c = getCell(g, 0, 0);
 
-    int min = c.data;
-    int max = c.data;
-    int buf;
+    double min = c.data;
+    double max = c.data;
+    double buf;
     Color color;
 
     // unsigned char hue;
 
-
+    // Determine range
     for(unsigned y = 0; y < g.height; y++) {
         for (unsigned x = 0; x < g.width; x++) {
             c = getCell(g, x, y);
@@ -90,7 +90,7 @@ void grid2PNG(Grid g, const char *filename) {
         }
     }
 
-    fprintf(stdout, "grid2PNG: min = %d, max = %d, median = %d\n", min, max, (min+max)/2 );
+    fprintf(stdout, "grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 );
 
     for(unsigned y = 0; y < g.height; y++) {
         for (unsigned x = 0; x < g.width; x++) {
@@ -104,7 +104,7 @@ void grid2PNG(Grid g, const char *filename) {
     return;
 }
 
-Color hueGradient(int min, int max, int target, char type) {
+Color hueGradient(double min, double max, double target, char type) {
     Color c;
     c.R = 0;
     c.G = 0;
@@ -115,10 +115,11 @@ Color hueGradient(int min, int max, int target, char type) {
         fprintf(stderr, "hueGradient: target out of range\n");
         return c;
     }
+    // Essentially linearly interpolate
     max = max-min;
     target = target - min;
-    unsigned char col;
-    unsigned char others;
+    unsigned char col; // Intensity of selected channel
+    unsigned char others; // Intensity of other channels
 
     if (max == 0) {
         others = 0;
