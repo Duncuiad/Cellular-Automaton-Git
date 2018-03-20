@@ -220,8 +220,8 @@ int main()
 
 
     // Initialize op with the inverse squared distance to center
-    double centerX = (op.width-1) / 2;
-    double centerY = (op.height-1) / 2;
+    double centerX = (op.width-1) / 2; //[Federico] Non so se è intenzionale, ma qui e alla riga sotto, la divisione utilizzata è la divisione intera
+    double centerY = (op.height-1) / 2;	//[Federico] Dovrebbe bastare dividere per 2.0
     for (int j = 0; j < op.height; j++) {
         for (int i = 0; i < op.width; i++) {
             double myDist = fabs(i-centerX)+fabs(j-centerY)+1;
