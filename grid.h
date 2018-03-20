@@ -4,7 +4,7 @@
 // This is the basic cell.
 //Should be good to add more data into this later: we'll just need to update the Rule functions to deal with them.
 typedef struct Cell {
-	int data;
+	double data;
 	// stuff to be added later
 } Cell;
 
