@@ -40,7 +40,7 @@ void commitGridUpdate(Grid *g);
 
 // Reads cell in position x, y in grid g.curGrid
 // calls exit(-1) if x or y are not in range.
-Cell getCell(Grid *g, int x, int y);
+Cell getCell(const Grid *g, int x, int y);
 
 // Writes the given cell in position x, y of grid g.newCell.
 // Calls exit(-1) if x or y is not in range.

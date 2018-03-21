@@ -18,8 +18,8 @@ Index transform(Index ind, char option);
 
 // Apply a certain transformation to a grid
 void transpose(Grid *g);
-void reflectHor(Grid *g);
-void reflectVer(Grif *g);
+//void reflectHor(Grid *g);
+//void reflectVer(Grif *g);
 
 
 #endif
