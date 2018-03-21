@@ -3,6 +3,23 @@
 
 #include "grid.h"
 
+//Transforms the input index with respect to the choosen rule
+Index transform(Index ind, char option);
+/* Options:
+'i': keep unchanged
+'r': rotate clocwise 90 degrees
+'l': rotate counterclockwise 90 degrees
+'c': rotate 180 degrees
+'x': reflect horizontally
+'y': reflect vertically
+'d': reflect with respect to the diagonal (transpose)
+'a': reflect with respect to the antidiagonal
+*/
+
+// Apply a certain transformation to a grid
+void transpose(Grid *g);
+void reflectHor(Grid *g);
+void reflectVer(Grif *g);
 
 
 #endif
