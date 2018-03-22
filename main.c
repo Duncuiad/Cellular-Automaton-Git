@@ -8,6 +8,7 @@
 #include <stdint.h> // for uintptr_t
 #include "grid.h"
 #include "image.h"
+#include "rules.h"
 
 int main()
 {
