@@ -1,0 +1,5 @@
+*.yml
+*.o
+*.md
+CellularAutomaton
+images/
