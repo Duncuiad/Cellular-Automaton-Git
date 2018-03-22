@@ -29,7 +29,6 @@ int main()
 {
     Grid g = initGrid(192, 108);
 
-    Grid op = initGrid(7, 7);
 
     Cell cell;
     cell.data = 1;
@@ -50,7 +49,13 @@ int main()
     }
     commitGridUpdate(&g);
 
+		initRuleConway(&g);
+		printGrid(g);
+		slideshowRuleConway(&g, "slideshow.png");
 
+
+/*
+    Grid op = initGrid(7, 7);
     // Initialize op with the inverse squared distance to center
     double centerX = (op.width-1) / 2; //[Federico] Non so se è intenzionale, ma qui e alla riga sotto, la divisione utilizzata è la divisione intera
     double centerY = (op.height-1) / 2;	//[Federico] Dovrebbe bastare dividere per 2.0
@@ -63,34 +68,6 @@ int main()
     }
     commitGridUpdate(&op);
 
-
-/*
-    // Initialize op with the x, y position of each cell
-    double centerX = (op.width-1) / 2;
-    double centerY = (op.height-1) / 2;
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            cell.data = i+j;
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-*/
-
-/*
-    // Initialize op with a bottom-right-corner unbalanced distribution
-    double centerX = (op.width-1) / 2;
-    double centerY = (op.height-1) / 2;
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            cell.data = 0;
-            if (i > centerX && j > centerY) cell.data ++;
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-*/
-
     // Make op have a total value of 1
     printGrid(op);
     printf(" ----\n\n");
@@ -100,12 +77,13 @@ int main()
 
     // Convolve
     slideshowRuleConvolve(&g, op, "slideshow.png");
+		destroyGrid(op);
 
+*/
     grid2PNG(g, "G.png");
 
 
     destroyGrid(g);
-    // destroyGrid(op);
 
     return 0;
 }

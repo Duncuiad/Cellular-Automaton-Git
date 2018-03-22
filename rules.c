@@ -6,6 +6,20 @@
 #include "grid.h"
 #include "image.h"
 
+/*
+  ORGANIZZAZIONE DI QUESTA COSA
+  Nel file sono elencate le regole, in ordine alfabetico di nome:
+  // NOME
+
+  Per ogni regola sono elencate, quando presenti:
+  - L'inizializzatore initRuleNome
+  - L'iteratore cella per cella ruleNome
+  - L'operatore sulla griglia applyRuleNome
+  - Il presentatore slideshowRuleNome
+
+*/
+
+// AVERAGE
 // Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato
 Cell ruleAverage(Grid g, int x, int y, int radius) {
 	int hitCount = 0; // celle valide
@@ -25,7 +39,18 @@ Cell ruleAverage(Grid g, int x, int y, int radius) {
 	return curCell;
 }
 
+void applyRuleAverage(Grid *g) {
+  Cell curCell;
+  for ( int x = 0; x < g->width; x++) {
+    for ( int y = 0; y < g->height; y++) {
+      curCell = ruleAverage( *g, x, y, 5);
+      setCell(g, x, y, curCell);
+    }
+  }
+  commitGridUpdate(g);
+}
 
+// CONVOLVE
 Cell ruleConvolve(Grid tgt, Grid op, int x, int y) {
     float runningCount = 0;
     int centerX = op.width/2;
@@ -43,6 +68,39 @@ Cell ruleConvolve(Grid tgt, Grid op, int x, int y) {
 
     curCellTgt.data = runningCount;
     return curCellTgt;
+}
+
+void applyRuleConvolve(Grid *tgt, Grid op) {
+  Cell curCell;
+  for ( int x = 0; x < tgt->width; x++) {
+    for ( int y = 0; y < tgt->height; y++) {
+      curCell = ruleConvolve( *tgt, op, x, y);
+      setCell(tgt, x, y, curCell);
+    }
+  }
+  commitGridUpdate(tgt);
+}
+
+void slideshowRuleConvolve(Grid *g, Grid op, const char *filename) {
+  char buffer[64];
+  do {
+    printf("Looping...\n");
+    applyRuleConvolve(g, op);
+    grid2PNG(*g, filename);
+  } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
+  return;
+}
+
+// CONWAY
+void initRuleConway(Grid *tgt) {
+  Cell temp;
+  for (int x = 0; x < tgt->width; x++) {
+    for (int y = 0; y < tgt->height; y++) {
+      temp.data = rand()%2;
+      setCell(tgt, x, y, temp);
+    }
+  }
+  commitGridUpdate(tgt);
 }
 
 Cell ruleConway(Grid tgt, int x, int y) {
@@ -78,28 +136,17 @@ void applyRuleConway(Grid *g) {
 	commitGridUpdate(g);
 }
 
-void applyRuleConvolve(Grid *tgt, Grid op) {
-    Cell curCell;
-	for ( int x = 0; x < tgt->width; x++) {
-		for ( int y = 0; y < tgt->height; y++) {
-			curCell = ruleConvolve( *tgt, op, x, y);
-			setCell(tgt, x, y, curCell);
-		}
-	}
-	commitGridUpdate(tgt);
+void slideshowRuleConway(Grid *g, const char *filename) {
+    char buffer[64];
+    do {
+        printf("Looping...\n");
+        grid2PNG(*g, filename);
+        applyRuleConway(g);
+    } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
+    return;
 }
 
-void applyRuleAverage(Grid *g) {
-	Cell curCell;
-	for ( int x = 0; x < g->width; x++) {
-		for ( int y = 0; y < g->height; y++) {
-			curCell = ruleAverage( *g, x, y, 5);
-			setCell(g, x, y, curCell);
-		}
-	}
-	commitGridUpdate(g);
-}
-
+// NORMALIZE
 void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
     Cell curCell = getCell(*g, 0, 0);
     double curMin = curCell.data;
@@ -132,7 +179,7 @@ void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
     commitGridUpdate(g);
 }
 
-
+// SETMASS
 void applyRuleSetMass(Grid *g, double tgtMass) {
     Cell curCell;
     double curMass = 0;
@@ -157,24 +204,4 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
     }
 
     commitGridUpdate(g);
-}
-
-void slideshowRuleConvolve(Grid *g, Grid op, const char *filename) {
-    char buffer[64];
-    do {
-        printf("Looping...\n");
-        applyRuleConvolve(g, op);
-        grid2PNG(*g, filename);
-    } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
-    return;
-}
-
-void slideshowRuleConway(Grid *g, const char *filename) {
-    char buffer[64];
-    do {
-        printf("Looping...\n");
-        grid2PNG(*g, filename);
-        applyRuleConway(g);
-    } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
-    return;
 }

@@ -17,6 +17,8 @@ void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax);
 
 void applyRuleSetMass(Grid *g, double tgtMass);
 
+void initRuleConway(Grid *tgt);
+
 void slideshowRuleConvolve(Grid *g, Grid op, const char *filename);
 
 void slideshowRuleConway(Grid *g, const char *filename);
