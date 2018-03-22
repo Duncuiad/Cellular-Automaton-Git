@@ -28,6 +28,7 @@ Cell ruleAverage(Grid g, int x, int y, int radius) {
 	return curCell;
 }
 
+
 Cell ruleConvolve(Grid tgt, Grid op, int x, int y) {
     float runningCount = 0;
     int centerX = op.width/2;
