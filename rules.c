@@ -1,13 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h> // for srand(time(NULL))
-#include <limits.h> // for MAX_INT
-#include <math.h>
-#include <string.h> // for filename management
-#include "lodepng.h"
-#include <stdint.h> // for uintptr_t
-#include "grid.h"
-#include "image.h"
 #include "rules.h"
 
 // Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato
