@@ -232,3 +232,15 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
 
     commitGridUpdate(g);
 }
+
+/* debug */
+void printGrid(Grid g) {
+    /* printf("Printing grid:\n"); */
+    for (int j = 0; j < g.height; j++) {
+        for (int i = 0; i < g.width; i++) {
+            Cell c = getCell(g, i, j);
+            printf("| %5f ", c.data);
+        }
+        printf("|\n\n");
+    }
+}

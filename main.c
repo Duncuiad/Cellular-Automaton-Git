@@ -12,21 +12,6 @@
 #include "image.h"
 #include "rules.h"
 
-
-/* debug */
-void printGrid(Grid g) {
-    /* printf("Printing grid:\n"); */
-    int j = 0;
-    int i = 0;
-    for (j = 0; j < g.height; j++) {
-        for (i = 0; i < g.width; i++) {
-            Cell c = getCell(g, i, j);
-            printf("| %5f ", c.data);
-        }
-        printf("|\n\n");
-    }
-}
-
 int main() {
 
 

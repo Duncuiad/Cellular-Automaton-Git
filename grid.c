@@ -7,7 +7,9 @@ typedef struct Cell
 typedef struct Grid
 */
 
-Grid initGrid(unsigned width, unsigned height) {
+// ------- GRID -------
+
+Grid initGrid(int width, int height) {
 	Grid g;
 	g.width = width;
 	g.height = height;
@@ -30,11 +32,11 @@ void commitGridUpdate(Grid *g) {
 	g->newCell = tmp;
 }
 
-Cell getCell(Grid g, int x, int y) {
-	if ( x >= g.width || y >= g.height || x<0 || y<0 ) {
+Cell getCell(const Grid *g, int x, int y) {
+	if ( x >= g->width || y >= g->height || x<0 || y<0 ) {
 		exit(-1);
 	}
-	return g.curCell[ x + y * g.width ];
+	return g->curCell[ x + y * g->width ];
 }
 
 void setCell(Grid *g, int x, int y, Cell cell) {
@@ -43,4 +45,15 @@ void setCell(Grid *g, int x, int y, Cell cell) {
 	}
 	g->newCell[ x + y * g->width ] = cell;
 	return;
+}
+
+// ------- INDEX -------
+
+Index At(int x, int y, int nRows, int nCols) {
+	Index ind;
+	ind.i = x;
+	ind.j = y;
+	ind.n = nRows;
+	ind.m = nCols;
+	return ind;
 }
