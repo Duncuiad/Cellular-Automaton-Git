@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h> // for srand(time(NULL))
-#include <string.h> // for filename management
+#include <time.h>
+#include <string.h>
 #include "lodepng.h"
-#include <stdint.h> // for uintptr_t
+#include <stdint.h>
 #include "grid.h"
 #include "image.h"
 /*
@@ -24,7 +24,7 @@ Image initImage(unsigned width, unsigned height, const char* filename) {
     img.width = width;
     img.height = height;
     strcpy(img.filename, filename);
-    img.data = calloc( width*height*4, sizeof(unsigned char) );
+    img.data = (unsigned char *) calloc( width*height*4, sizeof(unsigned char) );
     return img;
 }
 
@@ -41,7 +41,8 @@ void encodeOneStep(const char* filename, const unsigned char* image, unsigned wi
 }
 
 void saveImage(struct Image img) {
-    char path[ strlen(img.filename) + 8 ];
+    char* path;
+    path = (char *) calloc( (strlen(img.filename) + 8), sizeof(char) );
     sprintf(path, "images/%s", img.filename);
     encodeOneStep(path, img.data, img.width, img.height);
     return;
@@ -69,20 +70,21 @@ Color packColor(unsigned char R, unsigned char G, unsigned char B, unsigned char
 
 void grid2PNG(Grid g, const char *filename) {
     Image img = initImage(g.width, g.height, filename);
-
+    double min;
+    double max;
     Cell c;
-    c = getCell(g, 0, 0);
-
-    double min = c.data;
-    double max = c.data;
     double buf;
     Color color;
+    int x;
+    int y;
 
-    // unsigned char hue;
+    c = getCell(g, 0, 0);
+    min = c.data;
+    max = c.data;
 
-    // Determine range
-    for(unsigned y = 0; y < g.height; y++) {
-        for (unsigned x = 0; x < g.width; x++) {
+    /* Determine range */
+    for( y = 0; y < g.height; y++) {
+        for ( x = 0; x < g.width; x++) {
             c = getCell(g, x, y);
             buf = c.data;
             min = buf < min ? buf : min;
@@ -92,8 +94,8 @@ void grid2PNG(Grid g, const char *filename) {
 
     fprintf(stdout, "grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 );
 
-    for(unsigned y = 0; y < g.height; y++) {
-        for (unsigned x = 0; x < g.width; x++) {
+    for( y = 0; y < g.height; y++) {
+        for ( x = 0; x < g.width; x++) {
             c = getCell(g, x, y);
             color = hueGradient(min, max, c.data, 'r');
             writePixel(&img, x, y, color);
@@ -106,6 +108,10 @@ void grid2PNG(Grid g, const char *filename) {
 
 Color hueGradient(double min, double max, double target, char type) {
     Color c;
+    unsigned char col; /* Intensity of selected channel */
+    unsigned char others; /* Intensity of other channels */
+    int tmp;
+
     c.R = 0;
     c.G = 0;
     c.B = 0;
@@ -115,11 +121,9 @@ Color hueGradient(double min, double max, double target, char type) {
         fprintf(stderr, "hueGradient: target out of range\n");
         return c;
     }
-    // Essentially linearly interpolate
+    /* Essentially linearly interpolate */
     max = max-min;
     target = target - min;
-    unsigned char col; // Intensity of selected channel
-    unsigned char others; // Intensity of other channels
 
     if (max == 0) {
         others = 0;
@@ -127,10 +131,10 @@ Color hueGradient(double min, double max, double target, char type) {
     } else if ( target <= max/2 ) {
         others = 0;
         col = (target) * 510 / max;
-        // target is dark
+        /* target is dark */
     } else {
         col = 255;
-         int tmp = (512*target/max - 256);
+        tmp = (512*target/max - 256);
         if (tmp > 255) others = 255;
         else others = tmp;
     };
@@ -160,4 +164,3 @@ Color hueGradient(double min, double max, double target, char type) {
     return c;
 
 }
-

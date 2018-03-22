@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h> // for srand(time(NULL))
-#include <limits.h> // for MAX_INT
+#include <time.h> /* for srand(time(NULL)) */
+#include <limits.h> /* for MAX_INT */
 #include <math.h>
-#include <string.h> // for filename management
-#include <stdint.h> // for uintptr_t
+#include <string.h> /* for filename management */
+#include <stdint.h> /* for uintptr_t */
 
 #include "lodepng.h"
 
@@ -13,11 +13,13 @@
 #include "rules.h"
 
 
-// debug
+/* debug */
 void printGrid(Grid g) {
-    // printf("Printing grid:\n");
-    for (int j = 0; j < g.height; j++) {
-        for (int i = 0; i < g.width; i++) {
+    /* printf("Printing grid:\n"); */
+    int j = 0;
+    int i = 0;
+    for (j = 0; j < g.height; j++) {
+        for (i = 0; i < g.width; i++) {
             Cell c = getCell(g, i, j);
             printf("| %5f ", c.data);
         }
@@ -25,20 +27,24 @@ void printGrid(Grid g) {
     }
 }
 
-int main()
-{
-    Grid g = initGrid(192, 108);
+int main() {
 
+
+    /* Initialize g with random doubles in [0, 1) */
+    double tmp;
+    int j = 0;
+    int i = 0;
 
     Cell cell;
     cell.data = 1;
 
+    Grid g;
+    g = initGrid(192, 108);
+
     srand(time(NULL));
 
-    // Initialize g with random doubles in [0, 1)
-    double tmp;
-    for (int j = 0; j < g.height; j++) {
-        for (int i = 0; i < g.width; i++) {
+    for (j = 0; j < g.height; j++) {
+        for (i = 0; i < g.width; i++) {
 
             tmp = rand();
             tmp = tmp / RAND_MAX;

@@ -3,7 +3,7 @@
 
 #include "grid.h"
 
-// Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato
+/* Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato */
 Cell ruleAverage(Grid g, int x, int y, int radius);
 
 
@@ -23,4 +23,4 @@ void slideshowRuleConvolve(Grid *g, Grid op, const char *filename);
 
 void slideshowRuleConway(Grid *g, const char *filename);
 
-#endif //RULES_H_INCLUDED
+#endif /*RULES_H_INCLUDED*/

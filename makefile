@@ -2,7 +2,7 @@
 SHELL = /bin/sh
 
 OBJ = main.o grid.o image.o lodepng.o rules.o
-CFLAG =
+CFLAGS = -std=c90 -pedantic
 CC = gcc
 INCLUDE =
 LIB = -lm
@@ -10,6 +10,7 @@ LIB = -lm
 
 all: CellularAutomaton
 	rm -f images/*
+	rm -f *.gch
 
 main.o: lodepng.h grid.h image.h
 image.o: lodepng.h grid.h image.h
@@ -18,7 +19,7 @@ lodepng.o: lodepng.h
 rules.o: rules.h grid.h
 
 CellularAutomaton: $(OBJ)
-	$(CC) $(CFLAG) $(INCLUDE) -o $@ $(OBJ) $(LIB)
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) $(LIB)
 
 clean:
 	-rm -f *.o
