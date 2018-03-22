@@ -1,7 +1,7 @@
 #ifndef IMAGE_H_INCLUDED
 #define IMAGE_H_INCLUDED
 
-
+#include "grid.h"
 
 typedef struct Image {
     unsigned width;

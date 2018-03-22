@@ -1,31 +1,26 @@
-#ifndef _rules_h
-#define _rules_h
+#ifndef RULES_H_INCLUDED
+#define RULES_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h> // for srand(time(NULL))
-#include <limits.h> // for MAX_INT
-#include <math.h>
-#include <string.h> // for filename management
-#include "lodepng.h"
-#include <stdint.h> // for uintptr_t
 #include "grid.h"
-#include "image.h"
 
+/* Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato */
 Cell ruleAverage(Grid g, int x, int y, int radius);
-void applyRuleAverage(Grid *g);
+
 
 Cell ruleConvolve(Grid tgt, Grid op, int x, int y);
-void applyRuleConvolve(Grid *tgt, Grid op);
 
 Cell ruleConway(Grid tgt, int x, int y);
-void applyRuleConway(Grid *g);
+
+void applyRuleConvolve(Grid *tgt, Grid op);
 
 void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax);
 
+void applyRuleSetMass(Grid *g, double tgtMass);
+
+void initRuleConway(Grid *tgt);
+
+void slideshowRuleConvolve(Grid *g, Grid op, const char *filename);
+
 void slideshowRuleConway(Grid *g, const char *filename);
 
-//debug
-void printGrid(Grid g);
-
-#endif
+#endif /*RULES_H_INCLUDED*/

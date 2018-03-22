@@ -1,30 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h> // for srand(time(NULL))
-#include <limits.h> // for MAX_INT
+#include <time.h> /* for srand(time(NULL)) */
+#include <limits.h> /* for MAX_INT */
 #include <math.h>
-#include <string.h> // for filename management
+#include <string.h> /* for filename management */
+#include <stdint.h> /* for uintptr_t */
+
 #include "lodepng.h"
-#include <stdint.h> // for uintptr_t
+
 #include "grid.h"
 #include "image.h"
 #include "rules.h"
 
-int main()
-{
-    Grid g = initGrid(192, 108);
+int main() {
 
-    Grid op = initGrid(7, 7);
+
+    /* Initialize g with random doubles in [0, 1) */
+    double tmp;
+    int j = 0;
+    int i = 0;
 
     Cell cell;
     cell.data = 1;
 
+    Grid g;
+    g = initGrid(192, 108);
+
     srand(time(NULL));
 
-    // Initialize g with random doubles in [0, 1)
-    double tmp;
-    for (int j = 0; j < g.height; j++) {
-        for (int i = 0; i < g.width; i++) {
+    for (j = 0; j < g.height; j++) {
+        for (i = 0; i < g.width; i++) {
 
             tmp = rand();
             tmp = tmp / RAND_MAX;
@@ -35,7 +40,13 @@ int main()
     }
     commitGridUpdate(&g);
 
+		initRuleConway(&g);
+		printGrid(g);
+		slideshowRuleConway(&g, "slideshow.png");
 
+
+/*
+    Grid op = initGrid(7, 7);
     // Initialize op with the inverse squared distance to center
     double centerX = (op.width-1) / 2; //[Federico] Non so se è intenzionale, ma qui e alla riga sotto, la divisione utilizzata è la divisione intera
     double centerY = (op.height-1) / 2;	//[Federico] Dovrebbe bastare dividere per 2.0
@@ -48,34 +59,6 @@ int main()
     }
     commitGridUpdate(&op);
 
-
-/*
-    // Initialize op with the x, y position of each cell
-    double centerX = (op.width-1) / 2;
-    double centerY = (op.height-1) / 2;
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            cell.data = i+j;
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-*/
-
-/*
-    // Initialize op with a bottom-right-corner unbalanced distribution
-    double centerX = (op.width-1) / 2;
-    double centerY = (op.height-1) / 2;
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            cell.data = 0;
-            if (i > centerX && j > centerY) cell.data ++;
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-*/
-
     // Make op have a total value of 1
     printGrid(op);
     printf(" ----\n\n");
@@ -85,12 +68,13 @@ int main()
 
     // Convolve
     slideshowRuleConvolve(&g, op, "slideshow.png");
+		destroyGrid(op);
 
+*/
     grid2PNG(g, "G.png");
 
 
     destroyGrid(g);
-    // destroyGrid(op);
 
     return 0;
 }
