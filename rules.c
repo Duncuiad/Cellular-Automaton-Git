@@ -8,6 +8,7 @@
 #include <stdint.h> // for uintptr_t
 #include "grid.h"
 #include "image.h"
+#include "rules.h"
 
 // Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato
 Cell ruleAverage(Grid g, int x, int y, int radius) {
