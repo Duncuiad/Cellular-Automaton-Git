@@ -36,7 +36,7 @@ Cell getCell(const Grid *g, int x, int y) {
 	if ( x >= g->width || y >= g->height || x<0 || y<0 ) {
 		exit(-1);
 	}
-	return g->curCell[ x + y * g.width ];
+	return g->curCell[ x + y * g->width ];
 }
 
 void setCell(Grid *g, int x, int y, Cell cell) {

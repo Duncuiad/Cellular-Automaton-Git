@@ -4,7 +4,7 @@
 #include "grid.h"
 
 //Transforms the input index with respect to the choosen rule
-Index transform(Index ind, char option);
+Index transformIndex(Index ind, char option);
 /* Options:
 'i': keep unchanged
 'r': rotate clocwise 90 degrees
@@ -17,9 +17,6 @@ Index transform(Index ind, char option);
 */
 
 // Apply a certain transformation to a grid
-void transpose(Grid *g);
-//void reflectHor(Grid *g);
-//void reflectVer(Grif *g);
-
+void transformGrid(Grid *g, char option);
 
 #endif
