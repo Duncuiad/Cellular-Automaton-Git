@@ -251,3 +251,17 @@ void printGrid(const Grid *g) {
         printf("|\n\n");
     }
 }
+
+void initRandomGrid(Grid *g) {
+	int i, j;
+	Cell tempCell;
+
+	for ( i = 0; i < g->width; i++) {
+		for (j = 0; j < g->height; j++) {
+			tempCell.data = ((float) rand()/RAND_MAX);
+			setCell(g, i, j, tempCell);
+		}
+	}
+
+	commitGridUpdate(g);
+}

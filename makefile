@@ -25,5 +25,5 @@ CellularAutomaton: $(OBJ)
 clean:
 	-rm -f *.o
 
-run: all
+run: CellularAutomaton
 	gnome-terminal --profile=Dev  -- bash -c "./CellularAutomaton ; echo TERMINATED ; read line"

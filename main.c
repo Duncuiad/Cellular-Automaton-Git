@@ -27,37 +27,9 @@ int main(void) {
 
     srand(time(NULL));
 
-		initRuleConway(&g);
+		initRandomGrid(&g);
 		printGrid(&g);
-		slideshowRuleConway(&g, "slideshow.png");
 
-
-/*
-    Grid op = initGrid(7, 7);
-    // Initialize op with the inverse squared distance to center
-    double centerX = (op.width-1) / 2; //[Federico] Non so se è intenzionale, ma qui e alla riga sotto, la divisione utilizzata è la divisione intera
-    double centerY = (op.height-1) / 2;	//[Federico] Dovrebbe bastare dividere per 2.0
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            double myDist = fabs(i-centerX)+fabs(j-centerY)+1;
-            cell.data = pow( (1/myDist), 2);
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-
-    // Make op have a total value of 1
-    printGrid(op);
-    printf(" ----\n\n");
-    applyRuleSetMass(&op, 1);
-    printGrid(op);
-    grid2PNG(&op, "OP.png");
-
-    // Convolve
-    slideshowRuleConvolve(&g, &op, "slideshow.png");
-		destroyGrid(op);
-
-*/
     grid2PNG(&g, "G.png");
 
 
