@@ -12,36 +12,23 @@
 #include "image.h"
 #include "rules.h"
 
-int main() {
-
+int main(void) {
 
     /* Initialize g with random doubles in [0, 1) */
-    double tmp;
+/*    double tmp;
     int j = 0;
     int i = 0;
-
-    Cell cell;
-    cell.data = 1;
-
+    Cell cell; */
     Grid g;
+
+
+    /* cell.data = 1; */
     g = initGrid(192, 108);
 
     srand(time(NULL));
 
-    for (j = 0; j < g.height; j++) {
-        for (i = 0; i < g.width; i++) {
-
-            tmp = rand();
-            tmp = tmp / RAND_MAX;
-
-            cell.data = tmp;
-            setCell(&g, i, j, cell);
-        }
-    }
-    commitGridUpdate(&g);
-
 		initRuleConway(&g);
-		printGrid(g);
+		printGrid(&g);
 		slideshowRuleConway(&g, "slideshow.png");
 
 
@@ -64,14 +51,14 @@ int main() {
     printf(" ----\n\n");
     applyRuleSetMass(&op, 1);
     printGrid(op);
-    grid2PNG(op, "OP.png");
+    grid2PNG(&op, "OP.png");
 
     // Convolve
-    slideshowRuleConvolve(&g, op, "slideshow.png");
+    slideshowRuleConvolve(&g, &op, "slideshow.png");
 		destroyGrid(op);
 
 */
-    grid2PNG(g, "G.png");
+    grid2PNG(&g, "G.png");
 
 
     destroyGrid(g);

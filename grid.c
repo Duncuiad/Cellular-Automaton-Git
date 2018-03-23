@@ -7,15 +7,15 @@ typedef struct Cell
 typedef struct Grid
 */
 
-// ------- GRID -------
+/* ------- GRID ------- */
 
 Grid initGrid(int width, int height) {
 	Grid g;
 	g.width = width;
 	g.height = height;
 
-    g.curCell = calloc( width * height, sizeof(Cell) );
-    g.newCell = calloc( width * height, sizeof(Cell) );
+    g.curCell = (Cell *) calloc( width * height, sizeof(Cell) );
+    g.newCell = (Cell *) calloc( width * height, sizeof(Cell) );
 
 	return g;
 }
@@ -34,6 +34,7 @@ void commitGridUpdate(Grid *g) {
 
 Cell getCell(const Grid *g, int x, int y) {
 	if ( x >= g->width || y >= g->height || x<0 || y<0 ) {
+		fprintf(stderr, "ERRORE: getCell: ho cercato di accedere alla cella (%d, %d) ma la griglia era di dimensioni (%d, %d)\n", x, y, g->width, g->height );
 		exit(-1);
 	}
 	return g->curCell[ x + y * g->width ];
@@ -41,13 +42,14 @@ Cell getCell(const Grid *g, int x, int y) {
 
 void setCell(Grid *g, int x, int y, Cell cell) {
 	if ( x >= g->width || y >= g->height || x<0 || y<0 ) {
+		fprintf(stderr, "ERRORE: setCell: ho cercato di accedere alla cella (%d, %d) ma la griglia era di dimensioni (%d, %d)\n", x, y, g->width, g->height );
 		exit(-1);
 	}
 	g->newCell[ x + y * g->width ] = cell;
 	return;
 }
 
-// ------- INDEX -------
+/* ------- INDEX ------- */
 
 Index At(int x, int y, int nRows, int nCols) {
 	Index ind;

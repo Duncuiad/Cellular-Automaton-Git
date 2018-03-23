@@ -22,7 +22,7 @@
 /* AVERAGE
 // Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato
 */
-Cell ruleAverage(Grid g, int x, int y, int radius) {
+Cell ruleAverage(const Grid *g, int x, int y, int radius) {
 	int hitCount = 0; /* celle valide */
 	float runningTotal = 0;
 	Cell curCell;
@@ -31,7 +31,7 @@ Cell ruleAverage(Grid g, int x, int y, int radius) {
 	/* Questo e' facilmente ottimizzabile */
 	for ( i = -1*radius; i <= radius; i++) {
 		for ( j = -1*radius; j <= radius; j++) {
-			if (0 <= x+i && x+i < g.width && 0 <= y+j && y+j < g.height ) {
+			if (0 <= x+i && x+i < g->width && 0 <= y+j && y+j < g->height ) {
 				hitCount++;
 				curCell = getCell(g, x+i, y+j);
 				runningTotal += curCell.data;
@@ -49,7 +49,7 @@ void applyRuleAverage(Grid *g) {
 
   for ( x = 0; x < g->width; x++) {
     for ( y = 0; y < g->height; y++) {
-      curCell = ruleAverage( *g, x, y, 5);
+      curCell = ruleAverage( g, x, y, 5);
       setCell(g, x, y, curCell);
     }
   }
@@ -57,18 +57,18 @@ void applyRuleAverage(Grid *g) {
 }
 
 /* CONVOLVE */
-Cell ruleConvolve(Grid tgt, Grid op, int x, int y) {
+Cell ruleConvolve(const Grid *tgt, const Grid *op, int x, int y) {
     float runningCount = 0;
-    int centerX = op.width/2;
-    int centerY = op.height/2;
+    int centerX = op->width/2;
+    int centerY = op->height/2;
     Cell curCellTgt;
     Cell curCellOp;
 		int j;
 		int i;
 
-    for ( j = 0; j < op.height; j++) {
-        for ( i = 0; i < op.width; i++) {
-            curCellTgt = getCell(tgt, (x-centerX+i)%tgt.width , (y-centerY+j)%tgt.height );
+    for ( j = 0; j < op->height; j++) {
+        for ( i = 0; i < op->width; i++) {
+            curCellTgt = getCell(tgt, (x-centerX+i)%tgt->width , (y-centerY+j)%tgt->height );
             curCellOp = getCell(op, i, j);
             runningCount += curCellOp.data * curCellTgt.data;
         }
@@ -78,26 +78,26 @@ Cell ruleConvolve(Grid tgt, Grid op, int x, int y) {
     return curCellTgt;
 }
 
-void applyRuleConvolve(Grid *tgt, Grid op) {
+void applyRuleConvolve(Grid *tgt, const Grid *op) {
   Cell curCell;
 	int x;
 	int y;
 
   for ( x = 0; x < tgt->width; x++) {
     for ( y = 0; y < tgt->height; y++) {
-      curCell = ruleConvolve( *tgt, op, x, y);
+      curCell = ruleConvolve( tgt, op, x, y);
       setCell(tgt, x, y, curCell);
     }
   }
   commitGridUpdate(tgt);
 }
 
-void slideshowRuleConvolve(Grid *g, Grid op, const char *filename) {
+void slideshowRuleConvolve(Grid *g, const Grid *op, const char *filename) {
   char buffer[64];
   do {
     printf("Looping...\n");
     applyRuleConvolve(g, op);
-    grid2PNG(*g, filename);
+    grid2PNG(g, filename);
   } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
   return;
 }
@@ -115,9 +115,11 @@ void initRuleConway(Grid *tgt) {
     }
   }
   commitGridUpdate(tgt);
+	printf("Initialized grid as Conway:\n");
+	printGrid(tgt);
 }
 
-Cell ruleConway(Grid tgt, int x, int y) {
+Cell ruleConway(const Grid *tgt, int x, int y) {
 	int hitCount = 0;
 	Cell curCell;
 	int i;
@@ -126,7 +128,7 @@ Cell ruleConway(Grid tgt, int x, int y) {
 	/* Questo e' facilmente ottimizzabile */
 	for ( i = -1; i <= 1; i++) {
 		for ( j = -1; j <= 1; j++) {
-            curCell = getCell(tgt, (x+i)%tgt.width, (y+j)%tgt.height );
+            curCell = getCell(tgt, (x+i+tgt->width)%tgt->width, (y+j+tgt->height)%tgt->height );
             if (curCell.data == 1) hitCount++;
         }
 	}
@@ -147,9 +149,12 @@ void applyRuleConway(Grid *g) {
 	int x;
 	int y;
 
+	printf("Applying Rule Conway.\n");
+
 	for ( x = 0; x < g->width; x++) {
 		for ( y = 0; y < g->height; y++) {
-			curCell = ruleConway( *g, x, y);
+			/* printf("Rule Conway: setting cell (%d, %d).\n", x, y); */
+			curCell = ruleConway( g, x, y);
 			setCell(g, x, y, curCell);
 		}
 	}
@@ -157,18 +162,17 @@ void applyRuleConway(Grid *g) {
 }
 
 void slideshowRuleConway(Grid *g, const char *filename) {
-    char buffer[64];
     do {
-        printf("Looping...\n");
-        grid2PNG(*g, filename);
+        grid2PNG(g, filename);
         applyRuleConway(g);
-    } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
+				printf("Input x to quit:\n");
+    } while (getchar() != 'x');
     return;
 }
 
 /* NORMALIZE */
 void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
-    Cell curCell = getCell(*g, 0, 0);
+    Cell curCell = getCell(g, 0, 0);
     double curMin = curCell.data;
     double curMax = curCell.data;
     double buf;
@@ -180,7 +184,7 @@ void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
     /* Find current minimum and maximum */
     for ( j = 0; j<g->height; j++) {
         for ( i = 0; i<g->width; i++) {
-            curCell = getCell(*g, i, j);
+            curCell = getCell(g, i, j);
             buf = curCell.data;
             curMin = buf < curMin ? buf : curMin;
             curMax = buf > curMax ? buf : curMax;
@@ -192,7 +196,7 @@ void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
     distortion = (tgtMax-tgtMin)/(curMax-curMin);
     for ( j = 0; j<g->height; j++) {
         for ( i = 0; i<g->width; i++) {
-            curCell = getCell(*g, i, j);
+            curCell = getCell(g, i, j);
             data = curCell.data;
             data = ((data-curMin)*distortion)+tgtMin;
             curCell.data = data;
@@ -213,7 +217,7 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
     /* Find current mass */
     for ( j = 0; j < g->height; j++) {
         for ( i = 0; i < g->width; i++) {
-            curCell = getCell(*g, i, j);
+            curCell = getCell(g, i, j);
             curMass += curCell.data;
             /* printf("SetMass: curMass = %f\n", curMass); */
         }
@@ -224,7 +228,7 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
 		distortion = tgtMass/curMass;
     for ( j = 0; j<g->height; j++) {
         for ( i = 0; i<g->width; i++) {
-            curCell = getCell(*g, i, j);
+            curCell = getCell(g, i, j);
             curCell.data = curCell.data * distortion;
             setCell(g, i, j, curCell);
         }
@@ -233,11 +237,14 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
     commitGridUpdate(g);
 }
 
-/* debug */
-void printGrid(Grid g) {
-    /* printf("Printing grid:\n"); */
-    for (int j = 0; j < g.height; j++) {
-        for (int i = 0; i < g.width; i++) {
+/* UTILITIES */
+void printGrid(const Grid *g) {
+		int i;
+		int j;
+
+		printf("Printing grid:\n");
+    for ( j = 0; j < g->height; j++) {
+        for ( i = 0; i < g->width; i++) {
             Cell c = getCell(g, i, j);
             printf("| %5f ", c.data);
         }

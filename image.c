@@ -68,8 +68,8 @@ Color packColor(unsigned char R, unsigned char G, unsigned char B, unsigned char
     return c;
 }
 
-void grid2PNG(Grid g, const char *filename) {
-    Image img = initImage(g.width, g.height, filename);
+void grid2PNG(Grid *g, const char *filename) {
+    Image img = initImage(g->width, g->height, filename);
     double min;
     double max;
     Cell c;
@@ -78,13 +78,15 @@ void grid2PNG(Grid g, const char *filename) {
     int x;
     int y;
 
+    printf("grid2PNG: Saving grid in image: %s\n", filename);
+
     c = getCell(g, 0, 0);
     min = c.data;
     max = c.data;
 
     /* Determine range */
-    for( y = 0; y < g.height; y++) {
-        for ( x = 0; x < g.width; x++) {
+    for( y = 0; y < g->height; y++) {
+        for ( x = 0; x < g->width; x++) {
             c = getCell(g, x, y);
             buf = c.data;
             min = buf < min ? buf : min;
@@ -94,8 +96,8 @@ void grid2PNG(Grid g, const char *filename) {
 
     fprintf(stdout, "grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 );
 
-    for( y = 0; y < g.height; y++) {
-        for ( x = 0; x < g.width; x++) {
+    for( y = 0; y < g->height; y++) {
+        for ( x = 0; x < g->width; x++) {
             c = getCell(g, x, y);
             color = hueGradient(min, max, c.data, 'r');
             writePixel(&img, x, y, color);
