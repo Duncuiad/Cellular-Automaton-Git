@@ -265,3 +265,21 @@ void initRandomGrid(Grid *g) {
 
 	commitGridUpdate(g);
 }
+
+void initInverseSquare(Grid *g) {
+	int i, j;
+	Cell tempCell;
+	float centerX = (float) g->width / 2;
+	float centerY = (float) g->height / 2;
+	float temp;
+
+	for ( i = 0; i < g->width; i++) {
+		for (j = 0; j < g->height; j++) {
+			temp = (centerX-i)*(centerX-i) + (centerY-j)*(centerY-j);
+			tempCell.data = 1/(temp+1);
+			setCell(g, i, j, tempCell);
+		}
+	}
+
+	commitGridUpdate(g);
+}

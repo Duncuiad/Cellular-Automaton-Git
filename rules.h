@@ -26,4 +26,6 @@ void printGrid(const Grid *g);
 
 void initRandomGrid(Grid *g);
 
+void initInverseSquare(Grid *g);
+
 #endif /*RULES_H_INCLUDED*/

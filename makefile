@@ -10,7 +10,6 @@ LIB = -lm
 
 all: CellularAutomaton
 	rm -f images/*
-	rm -f *.gch
 
 main.o: lodepng.h grid.h image.h
 image.o: lodepng.h grid.h image.h
@@ -20,6 +19,7 @@ rules.o: rules.h grid.h
 transform.o: grid.h
 
 CellularAutomaton: $(OBJ)
+	rm -f *.gch
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) $(LIB)
 
 clean:

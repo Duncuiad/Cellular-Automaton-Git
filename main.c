@@ -27,7 +27,7 @@ int main(void) {
 
     srand(time(NULL));
 
-		initRandomGrid(&g);
+		initInverseSquare(&g);
 		printGrid(&g);
 
     grid2PNG(&g, "G.png");
