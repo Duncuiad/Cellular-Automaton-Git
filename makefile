@@ -1,7 +1,7 @@
 # Define required macros here
 SHELL = /bin/sh
 
-OBJ = main.o grid.o image.o lodepng.o rules.o
+OBJ = main.o grid.o image.o lodepng.o rules.o transform.o
 CFLAGS = -std=c90 -pedantic
 CC = gcc
 INCLUDE =
@@ -17,6 +17,7 @@ image.o: lodepng.h grid.h image.h
 grid.o: grid.h
 lodepng.o: lodepng.h
 rules.o: rules.h grid.h
+transform.o: grid.h
 
 CellularAutomaton: $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) $(LIB)
@@ -24,5 +25,5 @@ CellularAutomaton: $(OBJ)
 clean:
 	-rm -f *.o
 
-run: CellularAutomaton
-	gnome-terminal --profile=Dev  -- bash -c "./CellularAutomaton && echo TERMINATED && read line"
+run: all
+	gnome-terminal --profile=Dev  -- bash -c "./CellularAutomaton ; echo TERMINATED ; read line"

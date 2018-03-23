@@ -2,12 +2,12 @@
 #include "grid.h"
 #include <stdio.h>
 
-//Options and description listed in the header
+/* Options and description listed in the header */
 Index transformIndex(Index ind, char option){
-    Index temp = ind; // set temp equal to ind so that the switch-case only affects what actually changes between the two
+    Index temp = ind; /* set temp equal to ind so that the switch-case only affects what actually changes between the two */
     switch (option) {
         case 'i':
-            break; // unchanged indices: notice that temp == ind
+            break; /* unchanged indices: notice that temp == ind */
         case 'r':
             temp.i = ind.j;
             temp.j = ind.n - 1 - ind.i;
@@ -43,29 +43,29 @@ Index transformIndex(Index ind, char option){
             temp.m = ind.n;
             break;
         default :
-            // if the chosen option is not valid, it leaves the indices unscathed and prints a default error:
+            /* if the chosen option is not valid, it leaves the indices unscathed and prints a default error: */
             fprintf(stderr, "Errore: l'opzione scelta per la trasformazione degli indici non e' valida");
     }
     return temp;
 }
 
-// ------- GRID MANIPULATION -------
-// Apply a certain transformation to a grid
+/* ------- GRID MANIPULATION -------
+// Apply a certain transformation to a grid */
 
-// Traspone la griglia
+/* Transpose the grid */
 void transformGrid(Grid *g, char option){
-    Index ind = At(0, 0, g->height, g->width);
-    Index result = ind; // set to reduce the length of call to the temp grid coordinates
-    int i,j; // counters' standard prior to C99
-    for (i=0; i< g->height; i++){
-        for (j=0; j< g->width; j++) {
-            ind.i = i;
-            ind.j = j;
-            result = transformIndex(ind, option); // apply transposition to indices
-            setCell(g, result.i, result.j, getCell(g, i, j)); // set new grid using modified indices (function of the counting indices)
-        }
-    }
-    commitGridUpdate(g); // actually update the grid
-    g->width = result.m; // update grid dimensions
-    g->height = result.n;
+  int i,j; /* counters' standard prior to C99 */
+  Index ind = At(0, 0, g->height, g->width);
+  Index result = ind; /* set to reduce the length of call to the temp grid coordinates */
+  for (i=0; i< g->height; i++){
+      for (j=0; j< g->width; j++) {
+          ind.i = i;
+          ind.j = j;
+          result = transformIndex(ind, option); /* apply transposition to indices */
+          setCell(g, result.i, result.j, getCell(g, i, j)); /* set new grid using modified indices (function of the counting indices) */
+      }
+  }
+  commitGridUpdate(g); /* actually update the grid */
+  g->width = result.m; /* update grid dimensions */
+  g->height = result.n;
 }

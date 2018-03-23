@@ -19,7 +19,7 @@ void destroyImage(Image img);
 
 void encodeOneStep(const char* filename, const unsigned char* image, unsigned width, unsigned height);
 
-void grid2PNG(Grid g, const char *filename);
+void grid2PNG(Grid *g, const char *filename);
 
 Image initImage(unsigned width, unsigned height, const char* filename);
 
@@ -31,4 +31,4 @@ Color packColor(unsigned char R, unsigned char G, unsigned char B, unsigned char
 
 Color hueGradient(double min, double max, double target, char type);
 
-#endif // IMAGE_H_INCLUDED
+#endif /* IMAGE_H_INCLUDED */

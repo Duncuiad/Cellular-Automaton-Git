@@ -3,7 +3,7 @@
 
 #include "grid.h"
 
-//Transforms the input index with respect to the choosen rule
+/*Transforms the input index with respect to the choosen rule */
 Index transformIndex(Index ind, char option);
 /* Options:
 'i': keep unchanged
@@ -16,7 +16,7 @@ Index transformIndex(Index ind, char option);
 'a': reflect with respect to the antidiagonal
 */
 
-// Apply a certain transformation to a grid
+/* Apply a certain transformation to a grid */
 void transformGrid(Grid *g, char option);
 
 #endif

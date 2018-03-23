@@ -21,16 +21,16 @@ typedef struct Grid {
 	Cell *newCell; /* "working copy" */
 } Grid;
 
-// Index structures, it allows manipulation of indices prior to cell access
-// Heavily used in the transforms library
+/* Index structures, it allows manipulation of indices prior to cell access
+// Heavily used in the transforms library */
 typedef struct Index {
-	int i; // row (i) and column (j) indices
+	int i; /*  row (i) and column (j) indices */
 	int j;
-	int n; // total number of rows (n) and columns (m)
+	int n; /* total number of rows (n) and columns (m) */
 	int m;
 } Index;
 
-// ------- GRID -------
+/* ------- GRID ------- */
 
 /* Constructor */
 Grid initGrid(int width, int height);
@@ -53,9 +53,9 @@ Cell getCell(const Grid *g, int x, int y);
 */
 void setCell(Grid *g, int x, int y, Cell cell);
 
-// ------- INDEX -------
+/* ------- INDEX ------- */
 
-//Initializer
+/* Initializer */
 Index At(int x, int y, int nRows, int nCols);
 
 #endif
