@@ -52,12 +52,12 @@ Index transformIndex(Index ind, char option){
 /* ------- GRID MANIPULATION -------
 // Apply a certain transformation to a grid */
 
-/* Transpose the grid */
+/* Transform the grid */
 void transformGrid(Grid *g, char option){
   int i,j; /* counters' standard prior to C99 */
   Index ind = At(0, 0, g->height, g->width);
   Index result = ind; /* set to reduce the length of call to the temp grid coordinates */
-  for (i=0; i< g->height; i++){
+  for (i=0; i< g->height; i++) {
       for (j=0; j< g->width; j++) {
           ind.i = i;
           ind.j = j;
@@ -68,4 +68,19 @@ void transformGrid(Grid *g, char option){
   commitGridUpdate(g); /* actually update the grid */
   g->width = result.m; /* update grid dimensions */
   g->height = result.n;
+}
+
+void complement(Grid *g){
+  int i,j;
+  Cell tempCell;
+
+  for (i=0; i< g->height; i++) {
+    for (j=0; j< g->width; j++) {
+
+      tempCell.data = 1 - getCell(g, i, j).data;
+      setCell(g, i, j, tempCell);
+
+    }
+  }
+  commitGridUpdate(g);
 }
