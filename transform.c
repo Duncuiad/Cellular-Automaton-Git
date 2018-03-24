@@ -74,8 +74,8 @@ void complement(Grid *g){
   int i,j;
   Cell tempCell;
 
-  for (int i=0; i< g->height; i++) {
-    for (int j=0; j< g->width; j++) {
+  for (i=0; i< g->height; i++) {
+    for (j=0; j< g->width; j++) {
 
       tempCell.data = 1 - getCell(g, i, j).data;
       setCell(g, i, j, tempCell);

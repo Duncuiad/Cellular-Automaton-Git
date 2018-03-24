@@ -1,7 +1,7 @@
 # Define required macros here
 SHELL = /bin/sh
 
-OBJ = main.o grid.o image.o lodepng.o rules.o transform.o
+OBJ = main.o grid.o image.o lodepng.o init.o rules.o transform.o
 CFLAGS = -std=c90 -pedantic
 CC = gcc
 INCLUDE =
