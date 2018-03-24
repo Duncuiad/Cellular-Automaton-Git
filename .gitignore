@@ -1,5 +1,7 @@
 *.yml
 *.o
 *.md
+*Test.c
+*Test.x
 CellularAutomaton
 images/
