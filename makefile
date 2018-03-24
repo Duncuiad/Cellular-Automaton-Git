@@ -15,6 +15,7 @@ all: CellularAutomaton
 main.o: lodepng.h grid.h image.h
 image.o: lodepng.h grid.h image.h
 grid.o: grid.h
+init.o: init.h
 lodepng.o: lodepng.h
 rules.o: rules.h grid.h
 transform.o: grid.h
