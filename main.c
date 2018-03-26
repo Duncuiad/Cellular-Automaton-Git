@@ -1,3 +1,6 @@
+/* Am I in debug mode? */
+#define DEBUG 1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> /* for srand(time(NULL)) */
@@ -6,62 +9,37 @@
 #include <string.h> /* for filename management */
 #include <stdint.h> /* for uintptr_t */
 
-#include "lodepng.h"
-
 #include "grid.h"
 #include "image.h"
 #include "rules.h"
+#include "debug.h"
 
 int main(void) {
 
-    /* Initialize g with random doubles in [0, 1) */
-/*    double tmp;
-    int j = 0;
-    int i = 0;
-    Cell cell; */
     Grid g;
+    Grid op;
 
-
-    /* cell.data = 1; */
     g = initGrid(192, 108);
+    op = initGrid(7, 7);
+
+    TRACE(("DEBUG MODE ACTIVE.\n"));
 
     srand(time(NULL));
 
-		initRuleConway(&g);
-		printGrid(&g);
-		slideshowRuleConway(&g, "slideshow.png");
-
-
-/*
-    Grid op = initGrid(7, 7);
-    // Initialize op with the inverse squared distance to center
-    double centerX = (op.width-1) / 2; //[Federico] Non so se è intenzionale, ma qui e alla riga sotto, la divisione utilizzata è la divisione intera
-    double centerY = (op.height-1) / 2;	//[Federico] Dovrebbe bastare dividere per 2.0
-    for (int j = 0; j < op.height; j++) {
-        for (int i = 0; i < op.width; i++) {
-            double myDist = fabs(i-centerX)+fabs(j-centerY)+1;
-            cell.data = pow( (1/myDist), 2);
-            setCell(&op, i, j, cell);
-        }
-    }
-    commitGridUpdate(&op);
-
-    // Make op have a total value of 1
-    printGrid(op);
-    printf(" ----\n\n");
+		initRandomGrid(&g);
+    initInverseSquare(&op);
     applyRuleSetMass(&op, 1);
-    printGrid(op);
+    if (DEBUG) {
+      printGrid(&op);
+    }
+
+    grid2PNG(&g, "G.png");
     grid2PNG(&op, "OP.png");
 
-    // Convolve
-    slideshowRuleConvolve(&g, &op, "slideshow.png");
-		destroyGrid(op);
-
-*/
-    grid2PNG(&g, "G.png");
-
+    slideshowRuleConvolve(&g, &op, "Convolution.png");
 
     destroyGrid(g);
+    destroyGrid(op);
 
     return 0;
 }

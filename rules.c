@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "rules.h"
 #include "grid.h"
@@ -68,7 +69,7 @@ Cell ruleConvolve(const Grid *tgt, const Grid *op, int x, int y) {
 
     for ( j = 0; j < op->height; j++) {
         for ( i = 0; i < op->width; i++) {
-            curCellTgt = getCell(tgt, (x-centerX+i)%tgt->width , (y-centerY+j)%tgt->height );
+            curCellTgt = getCell(tgt, (x-centerX+i+tgt->width)%tgt->width , (y-centerY+j+tgt->height)%tgt->height );
             curCellOp = getCell(op, i, j);
             runningCount += curCellOp.data * curCellTgt.data;
         }
@@ -82,6 +83,8 @@ void applyRuleConvolve(Grid *tgt, const Grid *op) {
   Cell curCell;
 	int x;
 	int y;
+	int cpuTime;
+	clock_t timer = clock();
 
   for ( x = 0; x < tgt->width; x++) {
     for ( y = 0; y < tgt->height; y++) {
@@ -90,14 +93,17 @@ void applyRuleConvolve(Grid *tgt, const Grid *op) {
     }
   }
   commitGridUpdate(tgt);
+	timer = clock() - timer;
+	cpuTime = timer * 1000 / CLOCKS_PER_SEC;
+	printf("Convolution took %d.%03d sec.\n", cpuTime/1000, cpuTime%1000);
 }
 
 void slideshowRuleConvolve(Grid *g, const Grid *op, const char *filename) {
   char buffer[64];
   do {
-    printf("Looping...\n");
     applyRuleConvolve(g, op);
     grid2PNG(g, filename);
+		printf("Type \"exit\" to quit the slideshow.\n");
   } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
   return;
 }
@@ -162,12 +168,13 @@ void applyRuleConway(Grid *g) {
 }
 
 void slideshowRuleConway(Grid *g, const char *filename) {
-    do {
-        grid2PNG(g, filename);
-        applyRuleConway(g);
-				printf("Input x to quit:\n");
-    } while (getchar() != 'x');
-    return;
+  char buffer[64];
+  do {
+    applyRuleConway(g);
+    grid2PNG(g, filename);
+		printf("Type \"exit\" to quit the slideshow.\n");
+  } while (strcmp(fgets(buffer, 64, stdin), "exit\n") != 0);
+  return;
 }
 
 /* NORMALIZE */
@@ -250,4 +257,38 @@ void printGrid(const Grid *g) {
         }
         printf("|\n\n");
     }
+}
+
+void initRandomGrid(Grid *g) {
+	int i, j;
+	Cell tempCell;
+
+	for ( i = 0; i < g->width; i++) {
+		for (j = 0; j < g->height; j++) {
+			tempCell.data = ((float) rand()/RAND_MAX);
+			setCell(g, i, j, tempCell);
+		}
+	}
+
+	commitGridUpdate(g);
+}
+
+void initInverseSquare(Grid *g) {
+	int i, j;
+	Cell tempCell;
+	float centerX = (float) (g->width-1) / 2;
+	float centerY = (float) (g->height-1) / 2;
+	float temp;
+
+	for ( i = 0; i < g->width; i++) {
+		for (j = 0; j < g->height; j++) {
+			temp = (centerX-i)*(centerX-i) + (centerY-j)*(centerY-j);
+			/* hack to make it work nicely on large grids: */
+			temp /= centerX*centerX+centerY*centerY;
+			tempCell.data = 1/(temp+1);
+			setCell(g, i, j, tempCell);
+		}
+	}
+
+	commitGridUpdate(g);
 }

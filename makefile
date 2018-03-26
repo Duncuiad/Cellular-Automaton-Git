@@ -10,7 +10,6 @@ LIB = -lm
 
 all: CellularAutomaton
 	rm -f images/*
-	rm -f *.gch
 
 main.o: lodepng.h grid.h image.h
 image.o: lodepng.h grid.h image.h
@@ -20,16 +19,12 @@ lodepng.o: lodepng.h
 rules.o: rules.h grid.h
 transform.o: grid.h
 
-boolTest.o: lodepng.h grid.h image.h
-
-CellularAutomaton: main.o $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ main.o $(OBJ) $(LIB)
-
-boolTest.x: boolTest.o $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ boolTest.o $(OBJ) $(LIB)
+CellularAutomaton: $(OBJ)
+	rm -f *.gch
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) $(LIB)
 
 clean:
 	-rm -f *.o
 
-run: all
+run: CellularAutomaton
 	gnome-terminal --profile=Dev  -- bash -c "./CellularAutomaton ; echo TERMINATED ; read line"
