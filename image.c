@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "lodepng.h"
 #include <stdint.h>
+#include "lodepng.h"
+
 #include "grid.h"
 #include "image.h"
+#include "debug.h"
 /*
 typedef struct Image {
     unsigned width;
@@ -78,7 +80,7 @@ void grid2PNG(Grid *g, const char *filename) {
     int x;
     int y;
 
-    printf("grid2PNG: Saving grid in image: %s\n", filename);
+    TRACE(("grid2PNG: Saving grid in image: %s\n", filename));
 
     c = getCell(g, 0, 0);
     min = c.data;
@@ -94,7 +96,7 @@ void grid2PNG(Grid *g, const char *filename) {
         }
     }
 
-    fprintf(stdout, "grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 );
+    TRACE(("grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 ));
 
     for( y = 0; y < g->height; y++) {
         for ( x = 0; x < g->width; x++) {
