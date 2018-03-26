@@ -1,7 +1,7 @@
 # Define required macros here
 SHELL = /bin/sh
 
-OBJ = main.o grid.o image.o lodepng.o rules.o transform.o
+OBJ = grid.o image.o lodepng.o init.o rules.o transform.o
 CFLAGS = -std=c90 -pedantic
 CC = gcc
 INCLUDE =
@@ -14,6 +14,7 @@ all: CellularAutomaton
 main.o: lodepng.h grid.h image.h
 image.o: lodepng.h grid.h image.h
 grid.o: grid.h
+init.o: init.h
 lodepng.o: lodepng.h
 rules.o: rules.h grid.h
 transform.o: grid.h

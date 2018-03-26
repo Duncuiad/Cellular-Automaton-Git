@@ -19,4 +19,7 @@ Index transformIndex(Index ind, char option);
 /* Apply a certain transformation to a grid */
 void transformGrid(Grid *g, char option);
 
+/* Sets every element x in grid to 1-x */
+void complement(Grid *g);
+
 #endif
