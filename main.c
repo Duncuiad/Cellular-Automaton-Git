@@ -1,10 +1,3 @@
-/* Am I in debug mode? */
-#ifdef DEBUG
-#undef DEBUG
-#endif
-
-#define DEBUG 1
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> /* for srand(time(NULL)) */

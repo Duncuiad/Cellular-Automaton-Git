@@ -8,6 +8,8 @@
 #include "grid.h"
 #include "image.h"
 #include "debug.h"
+
+
 /*
 typedef struct Image {
     unsigned width;
