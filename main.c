@@ -1,6 +1,3 @@
-/* Am I in debug mode? */
-#define DEBUG 1
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> /* for srand(time(NULL)) */
@@ -13,6 +10,7 @@
 #include "image.h"
 #include "rules.h"
 #include "debug.h"
+#include "init.h"
 
 int main(void) {
 
@@ -26,7 +24,7 @@ int main(void) {
 
     srand(time(NULL));
 
-		initRandomGrid(&g);
+		initRandomNoise(&g);
     initInverseSquare(&op);
     applyRuleSetMass(&op, 1);
     if (DEBUG) {

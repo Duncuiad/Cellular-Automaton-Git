@@ -1,7 +1,7 @@
 # Define required macros here
 SHELL = /bin/sh
 
-OBJ = grid.o image.o lodepng.o init.o rules.o transform.o
+OBJ = grid.o image.o lodepng.o init.o rules.o transform.o debug.o #IO.o
 CFLAGS = -std=c90 -pedantic
 CC = gcc
 INCLUDE =
@@ -11,17 +11,19 @@ LIB = -lm
 all: CellularAutomaton
 	rm -f images/*
 
-main.o: lodepng.h grid.h image.h
-image.o: lodepng.h grid.h image.h
+main.o: grid.h image.h rules.h debug.h init.h
+image.o: lodepng.h grid.h image.h debug.h
 grid.o: grid.h
 init.o: init.h
 lodepng.o: lodepng.h
-rules.o: rules.h grid.h
+rules.o: rules.h grid.h debug.h
 transform.o: grid.h
+debug.o: debug.h
+# IO.o: IO.h debug.h
 
-CellularAutomaton: $(OBJ)
-	rm -f *.gch
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) $(LIB)
+CellularAutomaton: $(OBJ) main.o
+	-rm -f *.gch
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(OBJ) main.o $(LIB)
 
 clean:
 	-rm -f *.o

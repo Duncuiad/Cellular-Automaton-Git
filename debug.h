@@ -2,7 +2,7 @@
 #define DEBUG_H_INCLUDED
 
 #ifndef DEBUG
-#define DEBUG 0
+#define DEBUG 0 /*1 is debug active, 0 is not*/
 #endif
 
 #include <stdarg.h>
@@ -13,12 +13,6 @@
 ** TRACE(("Messaggio: %d %f\n", i, f));
 */
 
-void dbg_printf(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    vfprintf(stderr, fmt, args);
-    va_end(args);
-}
+void dbg_printf(const char *fmt, ... );
 
 #endif /*DEBUG_H_INCLUDED*/

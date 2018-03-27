@@ -6,6 +6,7 @@
 #include "rules.h"
 #include "grid.h"
 #include "image.h"
+#include "debug.h"
 
 /*
   ORGANIZZAZIONE DI QUESTA COSA
@@ -109,22 +110,6 @@ void slideshowRuleConvolve(Grid *g, const Grid *op, const char *filename) {
 }
 
 /* CONWAY */
-void initRuleConway(Grid *tgt) {
-  Cell temp;
-	int x;
-	int y;
-
-  for ( x = 0; x < tgt->width; x++) {
-    for ( y = 0; y < tgt->height; y++) {
-      temp.data = rand()%2;
-      setCell(tgt, x, y, temp);
-    }
-  }
-  commitGridUpdate(tgt);
-	printf("Initialized grid as Conway:\n");
-	printGrid(tgt);
-}
-
 Cell ruleConway(const Grid *tgt, int x, int y) {
 	int hitCount = 0;
 	Cell curCell;
@@ -155,7 +140,7 @@ void applyRuleConway(Grid *g) {
 	int x;
 	int y;
 
-	printf("Applying Rule Conway.\n");
+	TRACE(("Applying Rule Conway.\n"));
 
 	for ( x = 0; x < g->width; x++) {
 		for ( y = 0; y < g->height; y++) {
@@ -257,38 +242,4 @@ void printGrid(const Grid *g) {
         }
         printf("|\n\n");
     }
-}
-
-void initRandomGrid(Grid *g) {
-	int i, j;
-	Cell tempCell;
-
-	for ( i = 0; i < g->width; i++) {
-		for (j = 0; j < g->height; j++) {
-			tempCell.data = ((float) rand()/RAND_MAX);
-			setCell(g, i, j, tempCell);
-		}
-	}
-
-	commitGridUpdate(g);
-}
-
-void initInverseSquare(Grid *g) {
-	int i, j;
-	Cell tempCell;
-	float centerX = (float) (g->width-1) / 2;
-	float centerY = (float) (g->height-1) / 2;
-	float temp;
-
-	for ( i = 0; i < g->width; i++) {
-		for (j = 0; j < g->height; j++) {
-			temp = (centerX-i)*(centerX-i) + (centerY-j)*(centerY-j);
-			/* hack to make it work nicely on large grids: */
-			temp /= centerX*centerX+centerY*centerY;
-			tempCell.data = 1/(temp+1);
-			setCell(g, i, j, tempCell);
-		}
-	}
-
-	commitGridUpdate(g);
 }
