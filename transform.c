@@ -61,9 +61,8 @@ void transformGrid(Grid *g, char option){
       for (j=0; j< g->width; j++) {
           ind.i = i;
           ind.j = j;
-          result = transformIndex(ind, option); /* apply transposition to indices */
-          setCell(g, result.j, result.i, getCell(g, j, i)); /* set new grid using modified indices (function of the counting indices) */
-          /* NEED TO ACCESS G->NEWCELL DIRECTLY: SETCELL DOESN'T WORK WITH NOT YET UPDATED GRID DIMENSIONS */
+          result = transformIndex(ind, option); /* apply transformation to indices */
+          g->newCell[ result.j + result.i * result.m ] = getCell(g, j, i); /* set new grid using modified indices (function of the counting indices) */
       }
   }
   commitGridUpdate(g); /* actually update the grid */
