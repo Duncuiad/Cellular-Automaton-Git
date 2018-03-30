@@ -32,6 +32,22 @@ void commitGridUpdate(Grid *g) {
 	g->newCell = tmp;
 }
 
+void gridCopy(Grid *source, Grid *destination) {
+	int i,j; /* counters */
+	if ((source->width != destination->width) || (source->height != destination->height)) {
+		fprintf(stderr, "ERRORE: gridCopy: ho cercato copiare una griglia %dx%d in una griglia %dx%d\n", source->width, source->height, destination->width, destination->height );
+		exit(-1);
+	}
+
+	for (i=0; i<source->width; i++) {
+		for (j=0; j<source->height; j++) {
+			setCell(destination, i, j, getCell(source, i, j));
+		}
+	}
+
+	commitGridUpdate(destination);
+}
+
 Cell getCell(const Grid *g, int x, int y) {
 	if ( x >= g->width || y >= g->height || x<0 || y<0 ) {
 		fprintf(stderr, "ERRORE: getCell: ho cercato di accedere alla cella (%d, %d) ma la griglia era di dimensioni (%d, %d)\n", x, y, g->width, g->height );

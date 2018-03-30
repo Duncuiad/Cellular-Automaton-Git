@@ -20,7 +20,7 @@ rules.o: rules.h grid.h debug.h
 transform.o: grid.h
 debug.o: debug.h
 IO.o: IO.h debug.h
-test.o: grid.h image.h rules.h debug.h init.h IO.h
+test.o: grid.h image.h rules.h debug.h init.h IO.h transform.h
 
 test: $(OBJ) test.o
 	-rm -f *.gch

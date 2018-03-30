@@ -41,6 +41,9 @@ void destroyGrid(Grid g);
 /* This swaps (the pointers to) curCell and newCell, effectively committing the writes done to the write-only newCell into the read-only curCell. */
 void commitGridUpdate(Grid *g);
 
+/* Grid assignment */
+void gridCopy(Grid *source, Grid *destination);
+
 /*
 // Reads cell in position x, y in grid g.curGrid
 // calls exit(-1) if x or y are not in range.
