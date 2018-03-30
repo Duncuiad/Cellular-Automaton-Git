@@ -20,33 +20,44 @@ int isCharInString(char c, const char* str);
 
 char getUserInput(const char* query, const char* allowedAnswers) {
   char * buf;
-  size_t bufsize;
+  size_t bufsize = 32;
+  size_t buflen;
   size_t i;
 
+  /* check allowedAnswer and alloc buffer */
   if (strlen(allowedAnswers)<2) {
     fprintf(stderr, "getUserInput: got empty allowedAnswers.\n");
     exit(1);
   }
 
+  buf = (char *)malloc(bufsize * sizeof(char)); /* open buffer */
+  if( buf == NULL)
+  {
+    perror("Unable to allocate buffer");
+    exit(1);
+  }
+
+  /*  Get input */
   while (1) {
-      /*   SEGFAULT?!?!?!?! */
+
     printf("%s [%c", query, allowedAnswers[0]);
     for (i = 1; i < strlen(allowedAnswers); i++) {
       printf("/%c", allowedAnswers[i] );
     }
     printf("]: ");
 
-    getline(&buf, &bufsize, stdin);
+    buflen = getline(&buf, &bufsize, stdin);
     printf("got line.\n");
     /*TRACE(("Bufsize: %d\nBuf: %s\n", (int) bufsize, buf));*/
-    if (strlen(buf) == 2) {
+    if ((int) buflen == 2) {
       printf("Is char in string\n");
       if (isCharInString(buf[0], allowedAnswers)) {
         return buf[0];
       }
     }
-    free(buf);
   }
+
+  free(buf); /* close buffer */
 }
 
 int isCharInString(char c, const char* str) {
