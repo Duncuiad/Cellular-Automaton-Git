@@ -53,7 +53,7 @@ void initBlank(Grid *g, float state){
   commitGridUpdate(g);
 }
 
-void initInverseSquare(Grid *g) {
+void initCauchy(Grid *g) {
 	int i, j;
 	Cell tempCell;
 	float centerX = (float) (g->width-1) / 2;
@@ -66,6 +66,26 @@ void initInverseSquare(Grid *g) {
 			/* hack to make it work nicely on large grids: */
 			temp /= centerX*centerX+centerY*centerY;
 			tempCell.data = 1/(temp+1);
+			setCell(g, i, j, tempCell);
+		}
+	}
+
+	commitGridUpdate(g);
+}
+
+void initInverseSquare(Grid *g) {
+	int i, j;
+	Cell tempCell;
+	float centerX = (float) (g->width-1) / 2;
+	float centerY = (float) (g->height-1) / 2;
+	float temp;
+
+	for ( i = 0; i < g->width; i++) {
+		for (j = 0; j < g->height; j++) {
+			temp = (centerX-i)*(centerX-i) + (centerY-j)*(centerY-j);
+			/* hack to make it work nicely on large grids: */
+			temp /= centerX*centerX+centerY*centerY;
+			tempCell.data = (temp == 0.f) ? 1 : 1/temp;
 			setCell(g, i, j, tempCell);
 		}
 	}

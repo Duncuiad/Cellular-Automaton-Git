@@ -6,9 +6,15 @@
 /* Esempio: faccio la media di tutte le celle in un intorno quadrato di raggio dato */
 Cell ruleAverage(const Grid *g, int x, int y, int radius);
 
+Cell ruleCave(const Grid *g, int x, int y, int radius);
+
 Cell ruleConvolve(const Grid *tgt, const Grid *op, int x, int y);
 
 Cell ruleConway(const Grid *tgt, int x, int y);
+
+void applyRuleAverage(Grid *g);
+
+void applyRuleCave(Grid *g, int radius);
 
 void applyRuleConvolve(Grid *tgt, const Grid *op);
 

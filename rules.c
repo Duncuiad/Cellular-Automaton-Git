@@ -58,6 +58,55 @@ void applyRuleAverage(Grid *g) {
   commitGridUpdate(g);
 }
 
+/* CAVE */
+
+Cell ruleCave(const Grid *g, int x, int y, int radius) {
+  int ones = 0; /* flag */
+  Cell curCell; /* buffer */
+  int i, j; /* counters */
+
+  for (i = -1*radius;  i <= radius; i++) {
+
+    if (ones > 0) {break;} /* ones is a flag */
+
+    for (j = -1*radius; j <= radius; j++) {
+
+      if (ones > 0) {break;}
+
+      if (0 <= x+i && x+i < g->width && 0 <= y+j && y+j < g->height ) {
+        curCell = getCell(g, x+i, y+j);
+        if (curCell.data >= 0.5) {
+          ones++;
+        }
+      }
+
+    }
+  }
+
+  if (ones > 0) {
+    curCell.data = 1.f;
+  }
+  else {
+    curCell.data = 0.f;
+  }
+
+  return curCell;
+}
+
+void applyRuleCave(Grid *g, int radius) {
+  Cell curCell;
+  int x;
+  int y;
+
+  for ( x = 0; x < g->width; x++) {
+    for ( y = 0; y < g->height; y++) {
+      curCell = ruleCave( g, x, y, radius);
+      setCell(g, x, y, curCell);
+    }
+  }
+  commitGridUpdate(g);
+}
+
 /* CONVOLVE */
 Cell ruleConvolve(const Grid *tgt, const Grid *op, int x, int y) {
     float runningCount = 0;
