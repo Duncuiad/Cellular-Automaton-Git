@@ -1,6 +1,8 @@
 #ifndef _grid_h
 #define _grid_h
 
+#define MAX_NAME_LENGTH 64 /*max length for grid name */
+
 /* This is the basic cell.
 //Should be good to add more data into this later: we'll just need to update the Rule functions to deal with them.
 */
@@ -19,6 +21,7 @@ typedef struct Grid {
 	int height;
 	Cell *curCell;
 	Cell *newCell; /* "working copy" */
+	char name[MAX_NAME_LENGTH];
 } Grid;
 
 /* Index structures, it allows manipulation of indices prior to cell access
@@ -33,7 +36,7 @@ typedef struct Index {
 /* ------- GRID ------- */
 
 /* Constructor */
-Grid initGrid(int width, int height);
+Grid initGrid(int width, int height, const char *name);
 
 /* Destructor */
 void destroyGrid(Grid g);

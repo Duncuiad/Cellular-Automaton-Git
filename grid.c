@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grid.h"
+#include <string.h>
 
 /*
 typedef struct Cell
@@ -9,7 +10,7 @@ typedef struct Grid
 
 /* ------- GRID ------- */
 
-Grid initGrid(int width, int height) {
+Grid initGrid(int width, int height, const char *name) {
 	Grid g;
 
 	if (width <= 0 || height <= 0) {
@@ -20,8 +21,10 @@ Grid initGrid(int width, int height) {
 	g.width = width;
 	g.height = height;
 
-  g.curCell = (Cell *) calloc( width * height, sizeof(Cell) );
-  g.newCell = (Cell *) calloc( width * height, sizeof(Cell) );
+	g.curCell = (Cell *) calloc( width * height, sizeof(Cell) );
+	g.newCell = (Cell *) calloc( width * height, sizeof(Cell) );
+
+	strcpy(g.name, name);
 
 	return g;
 }
