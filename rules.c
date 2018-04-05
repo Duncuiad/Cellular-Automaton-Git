@@ -234,7 +234,7 @@ void printGrid(const Grid *g) {
 		int i;
 		int j;
 
-		printf("Printing grid:\n");
+		printf("Printing grid %d by %d:\n", g->width, g->height);
     for ( j = 0; j < g->height; j++) {
         for ( i = 0; i < g->width; i++) {
             Cell c = getCell(g, i, j);

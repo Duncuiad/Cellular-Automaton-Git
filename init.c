@@ -1,9 +1,14 @@
 #include "init.h"
+#include "debug.h"
+
+#define DEBUG 1
 
 /* sets every cell to random value in [0,1] */
 void initRandomNoise(Grid *g){
 	int i, j;
 	Cell tempCell;
+
+	TRACE(("initRandomNoise on grid size %d, %d", g->width, g->height));
 
 	for (i = 0; i < g->width; i++) {
 		for (j = 0; j < g->height; j++) {
