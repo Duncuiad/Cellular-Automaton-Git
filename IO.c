@@ -18,6 +18,31 @@
 
 int isCharInString(char c, const char* str);
 
+int getIntFromUser(int min, int max) {
+    int value;
+    char buf[1024];
+    char *end;
+
+    do {
+        printf("[%d - %d] ", min, max);
+
+        if (!fgets(buf, sizeof(buf), stdin) ) {
+            break;
+        }
+        /* remuve \n */
+        buf[strlen(buf)-1] = 0;
+
+        value = strtol(buf, &end, 10);
+    } while( end != buf + strlen(buf) || min > value || value > max);
+    /*flushLineFromStdin();*/
+
+    return value;
+}
+
+void flushLineFromStdin() {
+    while (getchar() != '\n');
+}
+
 char getUserInput(const char* query, const char* allowedAnswers) {
   char * buf;
   size_t bufsize = 32;
@@ -47,10 +72,10 @@ char getUserInput(const char* query, const char* allowedAnswers) {
     printf("]: ");
 
     buflen = getline(&buf, &bufsize, stdin);
-    printf("got line.\n");
+    TRACE(("got line.\n"));
     /*TRACE(("Bufsize: %d\nBuf: %s\n", (int) bufsize, buf));*/
     if ((int) buflen == 2) {
-      printf("Is char in string\n");
+      TRACE(("Is char in string\n"));
       if (isCharInString(buf[0], allowedAnswers)) {
         return buf[0];
       }

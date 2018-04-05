@@ -35,6 +35,7 @@ CellularAutomaton: $(OBJ) main.o
 
 clean:
 	-rm -f *.o
+	rm -f images/*
 
 run: CellularAutomaton
 	gnome-terminal --profile=Dev  -- bash -c "./CellularAutomaton ; echo TERMINATED ; read line"

@@ -11,11 +11,17 @@ typedef struct Grid
 
 Grid initGrid(int width, int height) {
 	Grid g;
+
+	if (width <= 0 || height <= 0) {
+		fprintf(stderr, "ERROR: initGrid: tried to init grid of sizes %d, %d\n", width, height);
+		exit(-1);
+	}
+
 	g.width = width;
 	g.height = height;
 
-    g.curCell = (Cell *) calloc( width * height, sizeof(Cell) );
-    g.newCell = (Cell *) calloc( width * height, sizeof(Cell) );
+  g.curCell = (Cell *) calloc( width * height, sizeof(Cell) );
+  g.newCell = (Cell *) calloc( width * height, sizeof(Cell) );
 
 	return g;
 }
