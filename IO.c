@@ -44,6 +44,14 @@ int getIntFromUser(int min, int max) {
     return value;
 }
 
+void awaitUserInput(void) {
+    char buf[1024];
+
+    fgets(buf, sizeof(buf), stdin);
+
+    return;
+}
+
 void flushLineFromStdin() {
     while (getchar() != '\n');
 }
@@ -122,6 +130,9 @@ void interactiveMode(Grid grids[MAXGRIDS]) {
             case 3:
             state = selectGrid(grids, &s);
             break;
+            case 4:
+            state = rulesMenu(grids, &s);
+            break;
         }
     } while(state >= 0);
 
@@ -192,10 +203,12 @@ int mainMenu(Grid *grids, int *s) {
 
     printf("\nCurrent grid: %s\n", grids[*s].name);
 
-    printf("What do you want to do?\n(i) Initialize the current grid\n(l) Slideshow a rule on the current grid\n(t) Display stats of the current grid\n(s) Select a new grid\n(d) Delete a grid\n(x) Exit\n");
-    c = getUserInput("Select one option", "iltsdx");
+    printf("What do you want to do?\n(i) Initialize the current grid\n(r) Apply a rule to the current grid\n(l) Slideshow a rule on the current grid\n(t) Display stats of the current grid\n(s) Select a new grid\n(d) Delete a grid\n(x) Exit\n");
+    c = getUserInput("Select one option", "irltsdx");
 
     switch (c) {
+        case 'r':
+            return 4;
         case 't':
             printf("Grid: %s\n", grids[*s].name);
             printf("Size: %d x %d\n", grids[*s].width, grids[*s].height);
@@ -209,6 +222,7 @@ int mainMenu(Grid *grids, int *s) {
                 }
             }
             printf("Range: %f to %f\n", curMin, curMax);
+            awaitUserInput();
             return 0; /* go to this menu */
         case 'i':
             return 1; /* go to initMenu */
@@ -312,4 +326,55 @@ int slideshowMenu(Grid *grids, int *s) {
     }
 
     return 2; /*go to this menu again */
+}
+
+int rulesMenu(Grid *grids, int *s) {
+    char c;
+    char buf[68];
+    int op;
+
+    sprintf(buf, "%s.png", grids[*s].name);
+
+    flushScreen();
+    TRACE(("DBG: In rulesMenu\n"));
+
+    printf("Current grid: %s.\n", grids[*s].name);
+    printf("Which rule would you like to apply?\n");
+    printf("(a) Normalize\n(b) Convolution\n(c) Set Mass\n(x) Back\n");
+    c = getUserInput("Select one option: ", "abcx");
+    switch (c) {
+        case 'a':
+            TRACE(("applyRuleNormalize on grid: %s\n", buf));
+            applyRuleNormalize(&grids[*s], 0, 1);
+            TRACE(("applyRuleNormalize done\n"));
+            grid2PNG(&grids[*s], buf );
+            break;
+        case 'b':
+            TRACE(("applyRuleConvolve beginning on grid %s\n", buf));
+            marker:
+            printAvailableGrids(grids);
+            printf("Select a grid:");
+            op = getIntFromUser(1, 10);
+            op--;
+            if (strcmp(grids[op].name, "") == 0) {
+                printf("Please select a non-empty grid slot.\n");
+                goto marker;
+            }
+            if (*s == op) {
+                printf("Cannot convolve a grid with itself.\n");
+                return 4; /* go to this menu */
+            }
+            applyRuleConvolve(&grids[*s], &grids[op]);
+            break;
+        case 'c':
+            TRACE(("applyRuleSetMass beginning on grid %s", grids[*s].name));
+            applyRuleSetMass(&grids[*s], 1);
+            TRACE(("applyRuleSetMass done"));
+            grid2PNG(&grids[*s], buf );
+            break;
+        case 'x':
+            return 0; /* go to main menu */
+    }
+
+    return 4; /*go to this menu again */
 }
