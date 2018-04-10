@@ -9,6 +9,8 @@
 void awaitUserInput(void);
 char getUserInput(const char* query, const char* allowedAnswers);
 int getIntFromUser(int min, int max);
+double getFloatFromUser(float min, float max);
+double getUnboundedFloatFromUser();
 void flushLineFromStdin();
 
 void interactiveMode(Grid grids[MAXGRIDS]);

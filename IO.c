@@ -21,6 +21,14 @@
 #include "image.h"
 #include "rules.h"
 
+/* To toggle DEBUG only in this file */
+/*
+#ifdef DEBUG
+#undef DEBUG
+#endif
+#define DEBUG 1
+*/
+
 int isCharInString(char c, const char* str);
 
 int getIntFromUser(int min, int max) {
@@ -41,6 +49,48 @@ int getIntFromUser(int min, int max) {
     } while( end != buf + strlen(buf) || min > value || value > max);
     /*flushLineFromStdin();*/
 
+    return value;
+}
+
+double getFloatFromUser(float min, float max) {
+    double value;
+    char buf[1024];
+    char *end;
+
+    do {
+        printf("[%f - %f] ", min, max);
+
+        if (!fgets(buf, sizeof(buf), stdin) ) {
+            fprintf(stderr, "getFloatFromUser: got invalid input.\n");
+            break;
+        }
+        /* remove \n */
+        buf[strlen(buf)-1] = 0;
+
+        value = strtod(buf, &end);
+    } while( end != buf + strlen(buf) || min > value || value > max);
+    /*flushLineFromStdin();*/
+
+    return value;
+}
+
+double getUnboundedFloatFromUser() {
+    double value;
+    char buf[1024];
+    char *end;
+
+    do {
+        if (!fgets(buf, sizeof(buf), stdin) ) {
+            fprintf(stderr, "getFloatFromUser: could not read from stdin.\n");
+            break;
+        }
+        /* remove \n */
+        buf[strlen(buf)-1] = 0;
+        TRACE(("DBG: getUnboundedFloatFromUser: trying to parse \"%s\"\n", buf));
+        value = strtod(buf, &end);
+    } while( end != buf + strlen(buf) );
+
+    TRACE(("DBG: getUnboundedFloatFromUser: read value %f\n", value));
     return value;
 }
 
@@ -85,8 +135,8 @@ char getUserInput(const char* query, const char* allowedAnswers) {
     printf("]: ");
 
     buflen = getline(&buf, &bufsize, stdin);
-    TRACE(("got line.\n"));
-    /*TRACE(("Bufsize: %d\nBuf: %s\n", (int) bufsize, buf));*/
+    TRACE(("DBG: got line.\n"));
+    /*TRACE(("DBG: Bufsize: %d\nBuf: %s\n", (int) bufsize, buf));*/
     if ((int) buflen == 2) {
       TRACE(("Is char in string\n"));
       if (isCharInString(buf[0], allowedAnswers)) {
@@ -149,7 +199,7 @@ void printAvailableGrids(Grid *grids) {
 
 void flushScreen(void) {
     int i;
-    for ( i = 0; i < 24; i++) {
+    for ( i = 0; i < 3; i++) {
         printf("\n");
     }
 }
@@ -194,11 +244,10 @@ int mainMenu(Grid *grids, int *s) {
     char c;
 
     int i, j;
-    float curMax, curMin;
+    double curMax, curMin;
     Cell curCell;
-    float buf;
+    double buf, mass;
 
-    flushScreen();
     TRACE(("DBG: In mainMenu\n"));
 
     printf("\nCurrent grid: %s\n", grids[*s].name);
@@ -210,39 +259,60 @@ int mainMenu(Grid *grids, int *s) {
         case 'r':
             return 4;
         case 't':
-            printf("Grid: %s\n", grids[*s].name);
+            printf("\n\nGrid: %s\n", grids[*s].name);
             printf("Size: %d x %d\n", grids[*s].width, grids[*s].height);
-            /* find min max */
+            /* find min max and mass*/
+            /* Get starting values for curMin and curMax, and mass as well */
+            curCell = getCell(&grids[*s], 0, 0);
+            curMin = curCell.data;
+            curMax = curMin;
+            mass = curMin;
+            /* Here I do dangerous things */
+            /* I want to start i as 1 in the first iteration, since I already checked (0, 0) */
+            i = 1;
             for ( j = 0; j<grids[*s].height; j++) {
-                for ( i = 0; i<grids[*s].width; i++) {
+                for ( /*nothing here*/ ; i<grids[*s].width; i++) {
                     curCell = getCell(&grids[*s], i, j);
                     buf = curCell.data;
+                    mass += buf;
+                    /*TRACE(("DBG: Partial total at cell (%d, %d) = %f\n", i, j, mass));*/
                     curMin = buf < curMin ? buf : curMin;
                     curMax = buf > curMax ? buf : curMax;
                 }
+                /*reset i*/
+                i = 0;
             }
             printf("Range: %f to %f\n", curMin, curMax);
-            awaitUserInput();
+            printf("Mass: %f\n", mass);
+            printf("\n\n");
             return 0; /* go to this menu */
         case 'i':
+            flushScreen();
             return 1; /* go to initMenu */
         case 's':
+            flushScreen();
             return 3;
         case 'l':
+            flushScreen();
             return 2; /* go to slideshowMenu */
         case 'd':
+            flushScreen();
             printAvailableGrids(grids);
             printf("Select a grid to delete: ");
             *s = getIntFromUser(1, 10);
             (*s)--;
             if (strcmp(grids[*s].name, "") != 0) {
+                printf("Deleted grid %s\n", grids[*s].name);
                 strcpy(grids[*s].name, "");
                 destroyGrid(grids[*s]);
             } else {
                 printf("Grid slot already empty.\n");
             }
+            awaitUserInput();
+            flushScreen();
             return 3; /* go to select grid */
         case 'x':
+            printf("Goodbye.\n");
             return -1;
     }
     return 0;
@@ -250,11 +320,11 @@ int mainMenu(Grid *grids, int *s) {
 
 int initMenu(Grid *grid) {
     char c;
+    double f;
 
     char buf[MAX_NAME_LENGTH+4];
     sprintf(buf, "%s.png", grid->name);
 
-    flushScreen();
     TRACE(("DBG: In initMenu\n"));
 
     printf("Current grid: %s.\n", grid->name);
@@ -263,13 +333,15 @@ int initMenu(Grid *grid) {
     c = getUserInput("Select one option: ", "abcx");
     switch (c) {
         case 'a':
-            TRACE(("initRandomNoise beginning on grid %s\n", grid->name));
+            TRACE(("DBG: initRandomNoise beginning on grid %s\n", grid->name));
             initRandomNoise(grid);
-            TRACE(("initRandomNoise done\n"));
+            TRACE(("DBG: initRandomNoise done\n"));
             grid2PNG(grid, buf );
             break;
         case 'b':
-            initRandomBool(grid, 0.5);
+            printf("Desired density? ");
+            f = getFloatFromUser(0, 1);
+            initRandomBool(grid, f);
             grid2PNG(grid, buf );
             break;
         case 'c':
@@ -291,7 +363,7 @@ int slideshowMenu(Grid *grids, int *s) {
     sprintf(buf, "%s.png", grids[*s].name);
 
     flushScreen();
-    TRACE(("DBG: In sludeshowMenu\n"));
+    TRACE(("DBG: In slideshowMenu\n"));
 
     printf("Current grid: %s.\n", grids[*s].name);
     printf("Which rule would you like to slideshow?\n");
@@ -299,13 +371,13 @@ int slideshowMenu(Grid *grids, int *s) {
     c = getUserInput("Select one option: ", "abx");
     switch (c) {
         case 'a':
-            TRACE(("slideshowRuleConway beginning on grid %s\n", buf));
+            TRACE(("DBG: slideshowRuleConway beginning on grid %s\n", buf));
             slideshowRuleConway(&grids[*s], buf);
-            TRACE(("initRandomNoise done\n"));
+            TRACE(("DBG: slideshowRuleConway done\n"));
             grid2PNG(&grids[*s], buf );
             break;
         case 'b':
-            TRACE(("slideshowRuleConvolve beginning on grid %s\n", buf));
+            TRACE(("DBG: slideshowRuleConvolve beginning on grid %s\n", buf));
             marker:
             printAvailableGrids(grids);
             printf("Select a grid:");
@@ -332,6 +404,7 @@ int rulesMenu(Grid *grids, int *s) {
     char c;
     char buf[68];
     int op;
+    double m, M;
 
     sprintf(buf, "%s.png", grids[*s].name);
 
@@ -344,16 +417,22 @@ int rulesMenu(Grid *grids, int *s) {
     c = getUserInput("Select one option: ", "abcx");
     switch (c) {
         case 'a':
-            TRACE(("applyRuleNormalize on grid: %s\n", buf));
-            applyRuleNormalize(&grids[*s], 0, 1);
-            TRACE(("applyRuleNormalize done\n"));
+            TRACE(("DBG: applyRuleNormalize on grid: %s\n", buf));
+            printf("What is the normalization range?\n");
+            printf("Min: ");
+            m = getUnboundedFloatFromUser();
+            printf("Max: ");
+            M = getUnboundedFloatFromUser();
+
+            applyRuleNormalize(&grids[*s], m, M);
+            TRACE(("DBG: applyRuleNormalize done\n"));
             grid2PNG(&grids[*s], buf );
             break;
         case 'b':
-            TRACE(("applyRuleConvolve beginning on grid %s\n", buf));
+            TRACE(("DBG: applyRuleConvolve beginning on grid %s\n", buf));
             marker:
             printAvailableGrids(grids);
-            printf("Select a grid:");
+            printf("Which grid would yu like to use as operator? ");
             op = getIntFromUser(1, 10);
             op--;
             if (strcmp(grids[op].name, "") == 0) {
@@ -365,16 +444,20 @@ int rulesMenu(Grid *grids, int *s) {
                 return 4; /* go to this menu */
             }
             applyRuleConvolve(&grids[*s], &grids[op]);
+            grid2PNG(&grids[*s], buf );
             break;
         case 'c':
-            TRACE(("applyRuleSetMass beginning on grid %s", grids[*s].name));
-            applyRuleSetMass(&grids[*s], 1);
-            TRACE(("applyRuleSetMass done"));
+            TRACE(("DBG: applyRuleSetMass beginning on grid %s\n", grids[*s].name));
+            printf("Desired mass: ");
+            m = getUnboundedFloatFromUser();
+            TRACE(("DBG: setting mass %f\n", m));
+            applyRuleSetMass(&grids[*s], m);
+            TRACE(("DBG: applyRuleSetMass done"));
             grid2PNG(&grids[*s], buf );
             break;
         case 'x':
             return 0; /* go to main menu */
     }
 
-    return 4; /*go to this menu again */
+    return 0; /*go to main menu */
 }

@@ -82,7 +82,7 @@ void grid2PNG(Grid *g, const char *filename) {
     int x;
     int y;
 
-    TRACE(("grid2PNG: Saving grid in image: %s\n", filename));
+    TRACE(("DBG: grid2PNG: Saving grid in image: %s\n", filename));
 
     c = getCell(g, 0, 0);
     min = c.data;
@@ -98,7 +98,7 @@ void grid2PNG(Grid *g, const char *filename) {
         }
     }
 
-    TRACE(("grid2PNG: min = %f, max = %f, median = %f\n", min, max, (min+max)/2 ));
+    TRACE(("DBG: grid2PNG: min = %f, max = %f\n", min, max ));
 
     for( y = 0; y < g->height; y++) {
         for ( x = 0; x < g->width; x++) {
@@ -109,6 +109,7 @@ void grid2PNG(Grid *g, const char *filename) {
     }
     saveImage(img);
     destroyImage(img);
+    printf("Saved image: %s\n", filename);
     return;
 }
 
