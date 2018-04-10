@@ -140,7 +140,7 @@ void applyRuleConway(Grid *g) {
 	int x;
 	int y;
 
-	TRACE(("Applying Rule Conway.\n"));
+	TRACE(("DBG: Applying Rule Conway.\n"));
 
 	for ( x = 0; x < g->width; x++) {
 		for ( y = 0; y < g->height; y++) {
@@ -168,10 +168,23 @@ void applyRuleNormalize(Grid *g, double tgtMin, double tgtMax) {
     double curMin = curCell.data;
     double curMax = curCell.data;
     double buf;
-		int j;
-		int i;
-		double distortion;
-		double data;
+	int j;
+	int i;
+	double distortion;
+	double data;
+
+	TRACE(("DBG: applyRuleNormalize starting with targets (%lf, %lf)\n", tgtMin, tgtMax));
+
+	if (tgtMin > tgtMax) {
+		/* swap min and max */
+		buf = tgtMin;
+		tgtMin = tgtMax;
+		tgtMax = buf;
+	} else if (tgtMin == tgtMax) {
+		/* error */
+		printf("Cannot normalize to range of 0.\n");
+		return;
+	}
 
     /* Find current minimum and maximum */
     for ( j = 0; j<g->height; j++) {
@@ -214,7 +227,7 @@ void applyRuleSetMass(Grid *g, double tgtMass) {
             /* printf("SetMass: curMass = %f\n", curMass); */
         }
     }
-    printf("SetMass: Done: curMass = %f\n", curMass);
+    TRACE(("DBG: SetMass: Done: curMass = %f\n", curMass));
 
     /* Now, actually normalize */
 		distortion = tgtMass/curMass;
